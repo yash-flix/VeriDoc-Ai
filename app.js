@@ -1,15 +1,20 @@
 require("dotenv").config();
 
+
 const express = require('express'); 
 const mongoose = require("mongoose"); 
 const app = express(); 
 const path = require('path'); 
 const Upload = require("./models/upload.js")
+const ejsMate = require("ejs-mate"); 
 const methodOverride = require("method-override")
+const apiRoutes = require("./routes/api.js"); 
+
+
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-// app.engine("ejs", ejsMate); 
+app.engine("ejs", ejsMate); 
 
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -39,6 +44,7 @@ app.get("/home" , (req,res)=>
 //routes
 const uploadRoute = require("./routes/upload.js")
 
+app.use("/api", apiRoutes);
 app.use("/" , uploadRoute);
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
