@@ -1,76 +1,55 @@
 const express = require("express");
-const Upload = require("../models/upload");
-const verifyFile = require("../services/verifyFile");
-
 const router = express.Router();
+const Upload = require("../models/upload");
+const verifyFile = require("../services/verifyFile"); // adjust path if needed
 
-// GET all documents (optional filtering)
-router.get("/documents", async (req, res) => {
-    try {
-        const filter = {};
-        if (req.query.status) filter["result.status"] = req.query.status;
-        if (req.query.fileType) filter["fileType"] = req.query.fileType;
-
-        const docs = await Upload.find(filter).sort({ createdAt: -1 });
-        res.json(docs);
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// GET status of a document
-router.get("/status/:id", async (req, res) => {
-    try {
-        const doc = await Upload.findById(req.params.id);
-        if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
-        res.json(doc.result);
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// POST verify a document manually
+// Verify document
 router.post("/verify/:id", async (req, res) => {
-    try {
-        const doc = await Upload.findById(req.params.id);
-        if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
+  try {
+    const upload = await Upload.findById(req.params.id);
+    if (!upload) return res.status(404).json({ error: "Upload not found" });
 
-        const verificationResult = await verifyFile(doc);
-        doc.result = verificationResult;
-        await doc.save();
+    const result = await verifyFile(upload); // call your verifyFile.js
+    upload.result = result;
+    await upload.save();
 
-        res.json({ success: true, result: verificationResult });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+    res.json({ success: true, result: upload.result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Verification failed" });
+  }
 });
 
-// POST manually approve a document
+// Approve document
 router.post("/approve/:id", async (req, res) => {
-    try {
-        const doc = await Upload.findById(req.params.id);
-        if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
+  try {
+    const upload = await Upload.findById(req.params.id);
+    if (!upload) return res.status(404).json({ error: "Upload not found" });
 
-        doc.result = { status: "verified", authenticityScore: 100 };
-        await doc.save();
-        res.json({ success: true, result: doc.result });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+    upload.result = { status: "approved", authenticityScore: 100 };
+    await upload.save();
+
+    res.json({ success: true, result: upload.result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Approval failed" });
+  }
 });
 
-// POST manually reject a document
+// Reject document
 router.post("/reject/:id", async (req, res) => {
-    try {
-        const doc = await Upload.findById(req.params.id);
-        if (!doc) return res.status(404).json({ success: false, message: "Document not found" });
+  try {
+    const upload = await Upload.findById(req.params.id);
+    if (!upload) return res.status(404).json({ error: "Upload not found" });
 
-        doc.result = { status: "rejected", authenticityScore: 0 };
-        await doc.save();
-        res.json({ success: true, result: doc.result });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+    upload.result = { status: "rejected", authenticityScore: 0 };
+    await upload.save();
+
+    res.json({ success: true, result: upload.result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Rejection failed" });
+  }
 });
 
 module.exports = router;

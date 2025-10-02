@@ -1,6 +1,15 @@
 <%- include('layouts/boilerplate.ejs') %>
 <body>
   <h1>All Uploads</h1>
+  
+
+  <% if (success_msg) { %>
+    <p style="color: green;"><%= success_msg %></p>
+  <% } %>
+
+  <% if (error_msg) { %>
+    <p style="color: red;"><%= error_msg %></p>
+  <% } %>
 
   <% if (uploads.length === 0) { %>
     <p>No uploads yet.</p>
@@ -12,23 +21,56 @@
         <th>Status</th>
         <th>Score</th>
         <th>View</th>
+        <th>Actions</th>
       </tr>
       <% uploads.forEach(upload => { %>
-        <tr>
-          <td><%= upload.fileName %></td>
-          <td><%= upload.fileType %></td>
-          <td><%= upload.result.status %></td>
-          <td><%= upload.result.authenticityScore || "N/A" %></td>
-          <td>
-            <% if (upload.fileUrl) { %>
-              <a href="<%= upload.fileUrl %>" target="_blank">Open</a>
-            <% } else { %>
-              No file
-            <% } %>
-          </td>
-        </tr>
+        <tr id="row-<%= upload._id %>">
+  <td><%= upload.fileName %></td>
+  <td><%= upload.fileType %></td>
+  <td class="status"><%= upload.result ? upload.result.status : "Pending" %></td>
+  <td class="score"><%= upload.result ? (upload.result.authenticityScore || "N/A") : "N/A" %></td>
+  <td>
+    <% if (upload.fileUrl) { %>
+      <a href="<%= upload.fileUrl %>" target="_blank">Open</a>
+    <% } else { %>
+      No file
+    <% } %>
+  </td>
+  <td>
+    <button onclick="verifyDoc('<%= upload._id %>')">Verify</button>
+    <button onclick="approveDoc('<%= upload._id %>')">Approve</button>
+    <button onclick="rejectDoc('<%= upload._id %>')">Reject</button>
+  </td>
+</tr>
+
       <% }) %>
     </table>
   <% } %>
+  <script>
+  async function verifyDoc(id) {
+    const res = await fetch(`/api/verify/${id}`, { method: "POST" });
+    const data = await res.json();
+    updateRow(id, data.result);
+  }
+
+  async function approveDoc(id) {
+    const res = await fetch(`/api/approve/${id}`, { method: "POST" });
+    const data = await res.json();
+    updateRow(id, data.result);
+  }
+
+  async function rejectDoc(id) {
+    const res = await fetch(`/api/reject/${id}`, { method: "POST" });
+    const data = await res.json();
+    updateRow(id, data.result);
+  }
+
+  function updateRow(id, result) {
+    const row = document.getElementById(`row-${id}`);
+    row.querySelector(".status").textContent = result.status;
+    row.querySelector(".score").textContent = result.authenticityScore ?? "N/A";
+  }
+</script>
+
 </body>
 </html>

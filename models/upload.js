@@ -10,7 +10,11 @@ const uploadSchema = new Schema({
     authenticityScore: { type: Number, default: null },
     anomalies: [String],
     verifiedAgainst: [String],
-    status: { type: String, enum: ["pending", "authentic", "suspicious", "fake"], default: "pending" }
+    status: { 
+      type: String, 
+      enum: ["pending", "authentic", "suspicious", "fake", "approved", "rejected"], 
+      default: "pending" 
+    }
   },
   createdAt: { type: Date, default: Date.now }
 });
