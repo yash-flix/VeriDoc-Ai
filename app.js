@@ -30,10 +30,10 @@ main()
     console.log("MongoDB connection error:", err);
 });
 
-app.get("/" , (req,res)=>
+app.get("/home" , (req,res)=>
 
 {
-    res.send("Hi i am root ")
+    res.render("home.ejs")
 })
 
 //routes
