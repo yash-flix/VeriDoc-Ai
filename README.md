@@ -1,252 +1,255 @@
+# VeriDocs AI – Intelligent Document & Media Verification System
+
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co/)
+[![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+
+> An AI-powered platform that verifies the authenticity of documents, images, and videos in real-time using multimodal machine learning models.
+
+---
+
+## 🔍 Overview
+
 VeriDocs AI combats the growing problem of fake certificates, deepfake media, and fraudulent documents across education, employment, journalism, and business sectors. By leveraging cutting-edge AI models from Hugging Face and external verification APIs, it provides fast, automated, and scalable document authentication.
 
-Key Features
-Document Verification: Detect forged or altered certificates, transcripts, and contracts
+---
 
-Image Authentication: Identify manipulated images and deepfakes using computer vision
+## ✨ Key Features
 
-Video Analysis: Spot edited or synthetic video content with advanced classification
+- **Document Verification**: Detect forged or altered certificates, transcripts, and contracts
+- **Image Authentication**: Identify manipulated images and deepfakes using computer vision
+- **Video Analysis**: Spot edited or synthetic video content with advanced classification
+- **Text Validation**: Check for plagiarism and inconsistencies in resumes and documents
+- **Real-time Processing**: Get instant verification results with confidence scores
+- **History Tracking**: Maintain verification logs for audit trails
 
-Text Validation: Check for plagiarism and inconsistencies in resumes and documents
+---
 
-Real-time Processing: Get instant verification results with confidence scores
+## 🎯 Use Cases
 
-History Tracking: Maintain verification logs for audit trails
+- **Students**: Verify academic certificates and transcripts
+- **HR Teams**: Authenticate resumes and educational credentials
+- **Journalists**: Confirm authenticity of viral media content
+- **Companies**: Validate invoices, contracts, and vendor documents
+- **Legal Professionals**: Check document authenticity for case evidence
 
-🎯 Use Cases
-Students: Verify academic certificates and transcripts
+---
 
-HR Teams: Authenticate resumes and educational credentials
+## 🛠️ Tech Stack
 
-Journalists: Confirm authenticity of viral media content
+### Frontend
+- **EJS**: Server-side templating for dynamic pages
+- **Bootstrap/Tailwind CSS**: Responsive UI design
+- **JavaScript**: Interactive dashboard components
 
-Companies: Validate invoices, contracts, and vendor documents
+### Backend
+- **Node.js**: Runtime environment
+- **Express.js**: Web application framework
+- **Multer**: File upload handling
+- **Axios**: HTTP client for API requests
 
-Legal Professionals: Check document authenticity for case evidence
+### Database
+- **MongoDB**: Document storage and user verification history
+- **Mongoose**: ODM for MongoDB interactions
 
-🛠️ Tech Stack
-Frontend
-EJS: Server-side templating for dynamic pages
+### AI/ML Integration
+- **Hugging Face API**: Multimodal AI models
+  - Document Question Answering
+  - Visual Document Retrieval
+  - Image Segmentation & Classification
+  - Video Classification
+  - Text Similarity & Classification
 
-Bootstrap/Tailwind CSS: Responsive UI design
+### External APIs
+- Google Reverse Image Search API
+- News verification APIs
+- Academic database integrations
 
-JavaScript: Interactive dashboard components
+---
 
-Backend
-Node.js: Runtime environment
+## 📁 Project Structure
 
-Express.js: Web application framework
+<img width="391" height="409" alt="VeriDocs AI Project Structure" src="https://github.com/user-attachments/assets/510eeb6d-7a48-4920-87c8-a9e536dc13b6" />
 
-Multer: File upload handling
+---
 
-Axios: HTTP client for API requests
+## 🚀 Getting Started
 
-Database
-MongoDB: Document storage and user verification history
+### Prerequisites
 
-Mongoose: ODM for MongoDB interactions
+- Node.js (v16 or higher)
+- MongoDB (local or Atlas)
+- Hugging Face API token
+- npm or yarn package manager
 
-AI/ML Integration
-Hugging Face API: Multimodal AI models
+### Installation
 
-Document Question Answering
-
-Visual Document Retrieval
-
-Image Segmentation & Classification
-
-Video Classification
-
-Text Similarity & Classification
-
-External APIs
-Google Reverse Image Search API
-
-News verification APIs
-
-Academic database integrations
-
-VeriDocs-AI/
-├── models/
-│   ├── User.js
-│   ├── Verification.js
-│   └── Document.js
-├── routes/
-│   ├── auth.js
-│   ├── upload.js
-│   └── verify.js
-├── controllers/
-│   ├── verifyFile.js
-│   ├── verifyImage.js
-│   └── verifyVideo.js
-├── views/
-│   ├── dashboard.ejs
-│   ├── upload.ejs
-│   └── results.ejs
-├── public/
-│   ├── css/
-│   └── js/
-├── utils/
-│   ├── huggingface.js
-│   └── apiHelpers.js
-├── .env
-├── app.js
-└── package.json
-
-🚀 Getting Started
-Prerequisites
-Node.js (v16 or higher)
-
-MongoDB (local or Atlas)
-
-Hugging Face API token
-
-npm or yarn package manager
-
-Installation
-Clone the repository
-
-bash
-git clone https://github.com/yourusername/VeriDocs-AI.git
+1. **Clone the repository**
+git clone https://github.com/yash-flix/VeriDocs-AI.git
 cd VeriDocs-AI
-Install dependencies
-
-bash
-npm install
-Configure environment variables
-
-bash
-cp .env.example .env
-Edit .env with your credentials:
 
 text
+
+2. **Install dependencies**
+npm install
+
+text
+
+3. **Configure environment variables**
+cp .env.example .env
+
+text
+
+Edit `.env` with your credentials:
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/veridocs
 HUGGINGFACE_API_KEY=your_huggingface_token
 GOOGLE_API_KEY=your_google_api_key
 SESSION_SECRET=your_secret_key
-Start MongoDB
 
-bash
+text
+
+4. **Start MongoDB**
 mongod
-Run the application
 
-bash
+text
+
+5. **Run the application**
 npm start
+
+text
+
 For development with auto-reload:
-
-bash
 npm run dev
-Access the platform at http://localhost:3000
 
-📝 API Endpoints
-Authentication
-POST /api/auth/register - User registration
+text
 
-POST /api/auth/login - User login
+6. **Access the platform** at `http://localhost:3000`
 
-GET /api/auth/logout - User logout
+---
 
-Verification
-POST /api/verify/document - Verify document authenticity
+## 📝 API Endpoints
 
-POST /api/verify/image - Verify image authenticity
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/auth/logout` - User logout
 
-POST /api/verify/video - Verify video content
+### Verification
+- `POST /api/verify/document` - Verify document authenticity
+- `POST /api/verify/image` - Verify image authenticity
+- `POST /api/verify/video` - Verify video content
+- `GET /api/verify/history` - Retrieve verification history
 
-GET /api/verify/history - Retrieve verification history
+### Upload
+- `POST /api/upload` - Upload files for verification
 
-Upload
-POST /api/upload - Upload files for verification
+---
 
-🔧 Configuration
-Hugging Face Models Used
-javascript
+## 🔧 Configuration
+
+### Hugging Face Models Used
+
 {
-  "document": "impira/layoutlm-document-qa",
-  "image": "openai/clip-vit-base-patch32",
-  "video": "MCG-NJU/videomae-base",
-  "text": "sentence-transformers/all-MiniLM-L6-v2"
+"document": "impira/layoutlm-document-qa",
+"image": "openai/clip-vit-base-patch32",
+"video": "MCG-NJU/videomae-base",
+"text": "sentence-transformers/all-MiniLM-L6-v2"
 }
-File Upload Limits
-Documents: PDF, DOCX (Max 10MB)
 
-Images: JPG, PNG (Max 5MB)
+text
 
-Videos: MP4, AVI (Max 50MB)
+### File Upload Limits
 
-🎨 Usage Example
-javascript
+- **Documents**: PDF, DOCX (Max 10MB)
+- **Images**: JPG, PNG (Max 5MB)
+- **Videos**: MP4, AVI (Max 50MB)
+
+---
+
+## 🎨 Usage Example
+
 // Document verification workflow
 const formData = new FormData();
 formData.append('file', documentFile);
 formData.append('type', 'certificate');
 
 const response = await fetch('/api/verify/document', {
-  method: 'POST',
-  body: formData
+method: 'POST',
+body: formData
 });
 
 const result = await response.json();
 console.log(result.authenticity); // "Authentic" or "Fake"
 console.log(result.confidence); // 0.0 - 1.0
 console.log(result.anomalies); // Array of detected issues
-📊 Verification Dashboard
+
+text
+
+---
+
+## 📊 Verification Dashboard
+
 The dashboard displays:
 
-Authenticity Score: Percentage-based confidence level
+- **Authenticity Score**: Percentage-based confidence level
+- **Anomaly Detection**: Specific issues found (mismatched fonts, artifacts, inconsistencies)
+- **Cross-Reference Results**: External API validation results
+- **Recommended Actions**: Next steps for manual review or alternative verification
 
-Anomaly Detection: Specific issues found (mismatched fonts, artifacts, inconsistencies)
+---
 
-Cross-Reference Results: External API validation results
+## 🌟 Future Enhancements
 
-Recommended Actions: Next steps for manual review or alternative verification
+- [ ] Blockchain integration for immutable verification records
+- [ ] Mobile application (React Native)
+- [ ] Bulk verification API for enterprise clients
+- [ ] Advanced deepfake detection with GANs
+- [ ] Integration with LinkedIn, university databases
+- [ ] SaaS pricing model for businesses
+- [ ] Real-time collaboration features for teams
 
-🌟 Future Enhancements
- Blockchain integration for immutable verification records
+---
 
- Mobile application (React Native)
+## 🤝 Contributing
 
- Bulk verification API for enterprise clients
-
- Advanced deepfake detection with GANs
-
- Integration with LinkedIn, university databases
-
- SaaS pricing model for businesses
-
- Real-time collaboration features for teams
-
-🤝 Contributing
 Contributions are welcome! Please follow these steps:
 
-Fork the repository
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Create a feature branch (git checkout -b feature/AmazingFeature)
+---
 
-Commit your changes (git commit -m 'Add AmazingFeature')
+## 📄 License
 
-Push to the branch (git push origin feature/AmazingFeature)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Open a Pull Request
+---
 
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 👨‍💻 Author
 
-👨‍💻 Author
-Yash Rane
+**Yash Rane**
+- GitHub: [@yash-flix](https://github.com/yash-flix)
+- Email: [yash.tushar13@gmail.com](mailto:yash.tushar13@gmail.com)
 
-GitHub: https://github.com/yash-flix
+---
 
+## 🙏 Acknowledgments
 
-🙏 Acknowledgments
-Hugging Face for providing state-of-the-art AI models
+- Hugging Face for providing state-of-the-art AI models
+- MongoDB for robust database solutions
+- The open-source community for invaluable tools and libraries
 
-MongoDB for robust database solutions
+---
 
-The open-source community for invaluable tools and libraries
+## 📞 Support
 
-📞 Support
-For questions or issues, please open an issue on GitHub or contact yash.tushar13@gmail.com
+For questions or issues, please open an issue on GitHub or contact [yash.tushar13@gmail.com](mailto:yash.tushar13@gmail.com)
 
-Note: This project is under active development. Features and documentation are continuously updated.
+---
+
+**Note**: This project is under active development. Features and documentation are continuously updated.
