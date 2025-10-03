@@ -12,7 +12,7 @@ const uploadSchema = new Schema({
     verifiedAgainst: [String],
     status: { 
       type: String, 
-      enum: ["pending", "authentic", "suspicious", "fake", "approved", "rejected"], 
+      enum: ["pending", "authentic", "suspicious", "fake", "approved", "rejected" , "error"], 
       default: "pending" 
     }
   },

@@ -1,0 +1,53 @@
+[33mcommit 6588c0a7594fcfce6864d20c70d92e8dc92fd90d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Fri Oct 3 07:38:57 2025 -0700
+
+    Ignore .env file
+
+[33mcommit b5a52bc50ce1ebd36299627644ff52beacee507f[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Fri Oct 3 07:31:20 2025 -0700
+
+    Ignore .env file
+
+[33mcommit eb2bd577e4a06c51bf708a8fca6a6301bbdafb9f[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Fri Oct 3 07:28:53 2025 -0700
+
+    implemented huggingface models
+
+[33mcommit 15c3aaa22a2a4f703631bb71ee678e0aace37733[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Thu Oct 2 09:46:28 2025 -0700
+
+    handled some errors
+
+[33mcommit ef076aae61d29c100d9e9e9f65f95abd467b7ced[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Thu Oct 2 03:34:47 2025 -0700
+
+    fixed some errors
+
+[33mcommit 20b487eb843c5d80832b04438e7b2231057758e8[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Thu Oct 2 03:24:24 2025 -0700
+
+    added Ui , boilerplate and navbar
+
+[33mcommit 71150b79dd408783dc248ea4979eaebcbe515873[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Thu Oct 2 01:05:25 2025 -0700
+
+    Ui
+
+[33mcommit 2c067fd97b1be00f213eadd6cc46167fbe3ce5df[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Wed Oct 1 23:35:55 2025 -0700
+
+    verification
+
+[33mcommit f5a6ab12ed9f50c68f6006ae67884d866f609ead[m
+Author: Yash Rane <yash.tushar13@gmail.com>
+Date:   Wed Oct 1 13:11:43 2025 -0700
+
+    initialised the project
