@@ -1,0 +1,597 @@
+<%- include('layouts/boilerplate.ejs') %>
+
+<body>
+  <div class="results-container">
+    <!-- Header Section -->
+    <div class="header">
+      <h1>Verification Results</h1>
+      <a href="/dashboard" class="back-btn">← Back to Dashboard</a>
+    </div>
+
+    <!-- Upload Information Card -->
+    <div class="upload-info-card">
+      <h2>Document Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">File Name:</span>
+          <span class="value"><%= upload.fileName %></span>
+        </div>
+        <div class="info-item">
+          <span class="label">File Type:</span>
+          <span class="value"><%= upload.fileType %></span>
+        </div>
+        <div class="info-item">
+          <span class="label">Upload Date:</span>
+          <span class="value"><%= new Date(upload.createdAt).toLocaleString() %></span>
+        </div>
+        <div class="info-item">
+          <span class="label">File Size:</span>
+          <span class="value"><%= upload.fileSize || "N/A" %></span>
+        </div>
+      </div>
+
+      <!-- Document Preview -->
+      <div class="preview-section">
+        <h3>Document Preview</h3>
+        <% if (upload.fileUrl) { %>
+          <% if (upload.fileType === "image" || upload.fileType === "document") { %>
+            <img src="<%= upload.fileUrl %>" alt="<%= upload.fileName %>" class="preview-image">
+          <% } else if (upload.fileType === "video") { %>
+            <video controls class="preview-video">
+              <source src="<%= upload.fileUrl %>" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          <% } %>
+          <a href="<%= upload.fileUrl %>" target="_blank" class="view-full-btn">View Full Size →</a>
+        <% } else { %>
+          <p>No preview available</p>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Verification Results Card -->
+    <div class="verification-card">
+      <h2>AI Verification Analysis</h2>
+      
+      <!-- Status Badge -->
+      <div class="status-section">
+        <div class="status-badge status-<%= upload.result?.status || 'pending' %>">
+          <% if (upload.result?.status === "authentic") { %>
+            ✓ AUTHENTIC
+          <% } else if (upload.result?.status === "suspicious") { %>
+            ⚠ SUSPICIOUS
+          <% } else if (upload.result?.status === "fake") { %>
+            ✗ FAKE
+          <% } else if (upload.result?.status === "approved") { %>
+            ✓ APPROVED
+          <% } else if (upload.result?.status === "rejected") { %>
+            ✗ REJECTED
+          <% } else { %>
+            ⏳ PENDING
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Authenticity Score -->
+      <% if (upload.result?.authenticityScore !== undefined && upload.result?.authenticityScore !== null) { %>
+        <div class="score-section">
+          <h3>Authenticity Score</h3>
+          <div class="score-circle">
+            <svg width="200" height="200" viewBox="0 0 200 200">
+              <!-- Background circle -->
+              <circle cx="100" cy="100" r="80" fill="none" stroke="#e0e0e0" stroke-width="20"/>
+              <!-- Progress circle -->
+              <circle cx="100" cy="100" r="80" fill="none" 
+                      stroke="<%= upload.result.authenticityScore >= 70 ? '#000' : upload.result.authenticityScore >= 40 ? '#666' : '#999' %>" 
+                      stroke-width="20"
+                      stroke-dasharray="<%= (upload.result.authenticityScore / 100) * 502.65 %> 502.65"
+                      transform="rotate(-90 100 100)"/>
+              <!-- Score text -->
+              <text x="100" y="100" text-anchor="middle" dy=".3em" font-size="48" font-weight="bold" 
+                    fill="<%= upload.result.authenticityScore >= 70 ? '#000' : upload.result.authenticityScore >= 40 ? '#666' : '#999' %>">
+                <%= upload.result.authenticityScore.toFixed(1) %>
+              </text>
+              <text x="100" y="130" text-anchor="middle" font-size="16" fill="#666">out of 100</text>
+            </svg>
+          </div>
+          <p class="score-description">
+            <% if (upload.result.authenticityScore >= 70) { %>
+              High confidence in authenticity
+            <% } else if (upload.result.authenticityScore >= 40) { %>
+              Moderate confidence - manual review recommended
+            <% } else { %>
+              Low confidence - likely fake or manipulated
+            <% } %>
+          </p>
+        </div>
+      <% } %>
+
+      <!-- Anomalies Detected -->
+      <div class="anomalies-section">
+        <h3>Detected Issues</h3>
+        <% if (upload.result?.anomalies && upload.result.anomalies.length > 0) { %>
+          <ul class="anomalies-list">
+            <% upload.result.anomalies.forEach(anomaly => { %>
+              <li class="anomaly-item">
+                <span class="icon">⚠️</span>
+                <%= anomaly %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p class="no-anomalies">✓ No anomalies detected</p>
+        <% } %>
+      </div>
+
+      <!-- Verification Models Used -->
+      <div class="models-section">
+        <h3>Verification Methods</h3>
+        <% if (upload.result?.verifiedAgainst && upload.result.verifiedAgainst.length > 0) { %>
+          <ul class="models-list">
+            <% upload.result.verifiedAgainst.forEach(model => { %>
+              <li class="model-item">
+                <span class="icon">🤖</span>
+                <%= model %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %>
+          <p>No verification methods available</p>
+        <% } %>
+      </div>
+
+      <!-- Verification Timestamp -->
+      <div class="timestamp-section">
+        <p class="timestamp">
+          <strong>Last Verified:</strong> <%= new Date(upload.createdAt).toLocaleString() %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions-section">
+      <button class="btn btn-primary" onclick="reverifyDoc()">
+        🔄 Re-verify Document
+      </button>
+      <button class="btn btn-success" onclick="approveDoc()">
+        ✓ Approve
+      </button>
+      <button class="btn btn-danger" onclick="rejectDoc()">
+        ✗ Reject
+      </button>
+      <button class="btn btn-secondary" onclick="downloadReport()">
+        📄 Download Report
+      </button>
+    </div>
+
+    <!-- Additional Metadata -->
+    <div class="metadata-card">
+      <h3>Additional Information</h3>
+      <div class="metadata-grid">
+        <div class="metadata-item">
+          <span class="label">Document ID:</span>
+          <span class="value"><code><%= upload._id %></code></span>
+        </div>
+        <div class="metadata-item">
+          <span class="label">Cloudinary ID:</span>
+          <span class="value"><code><%= upload.cloudinaryId || "N/A" %></code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .results-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #000;
+    }
+
+    .header h1 {
+      color: #000;
+      font-size: 2em;
+      font-weight: 700;
+    }
+
+    .back-btn {
+      padding: 10px 20px;
+      background-color: #000;
+      color: white;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: background-color 0.3s;
+      font-weight: 500;
+    }
+
+    .back-btn:hover {
+      background-color: #333;
+    }
+
+    .upload-info-card, .verification-card, .metadata-card {
+      background: white;
+      border-radius: 0;
+      border: 2px solid #000;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+    }
+
+    .upload-info-card h2, .verification-card h2, .metadata-card h3 {
+      color: #000;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-grid, .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .info-item, .metadata-item {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-left: 3px solid #000;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 5px;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .value {
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    .preview-section {
+      margin-top: 30px;
+    }
+
+    .preview-image, .preview-video {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 2px solid #000;
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+      margin: 20px 0;
+    }
+
+    /* .view-full-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #000;
+      color: white;
+      text-decoration: none;
+      border-radius: 0;
+      transition: background-color 0.3s;
+      font-weight: 600;
+    } */
+    .view-full-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 15px 20px;
+  background-color: #07080a;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+.view-full-btn:hover {
+  background-color: #0056b3;
+}
+
+    .view-full-btn:hover {
+      background-color: #333;
+    }
+
+    .status-section {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 1.5em;
+      font-weight: bold;
+      border-radius: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .status-authentic, .status-approved {
+      background-color: #000;
+      color: #fff;
+      border: 3px solid #000;
+    }
+
+    .status-suspicious {
+      background-color: #fff;
+      color: #000;
+      border: 3px solid #666;
+    }
+
+    .status-fake, .status-rejected {
+      background-color: #fff;
+      color: #999;
+      border: 3px solid #999;
+      text-decoration: line-through;
+    }
+
+    .status-pending {
+      background-color: #f5f5f5;
+      color: #666;
+      border: 3px solid #ccc;
+    }
+
+    .score-section {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .score-circle {
+      margin: 20px auto;
+    }
+
+    .score-description {
+      font-size: 1.1em;
+      color: #666;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    .anomalies-section, .models-section {
+      margin: 30px 0;
+    }
+
+    .anomalies-section h3, .models-section h3 {
+      color: #000;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .anomalies-list, .models-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .anomaly-item, .model-item {
+      background-color: #f9f9f9;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 0;
+      border-left: 4px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .model-item {
+      border-left-color: #666;
+    }
+
+    .no-anomalies {
+      color: #000;
+      font-weight: bold;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 0;
+      border: 2px solid #000;
+      text-align: center;
+    }
+
+    .timestamp-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #000;
+    }
+
+    .timestamp {
+      color: #666;
+      font-size: 0.95em;
+    }
+
+    .actions-section {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      font-size: 1em;
+      font-weight: bold;
+      border: 2px solid #000;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: #fff;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background-color: #000;
+      color: white;
+    }
+
+    .btn-primary {
+      background-color: #000;
+      color: white;
+      border-color: #000;
+    }
+
+    .btn-primary:hover {
+      background-color: #333;
+      border-color: #333;
+    }
+
+    .btn-success {
+      background-color: #fff;
+      color: #000;
+      border-color: #000;
+    }
+
+    .btn-danger {
+      background-color: #fff;
+      color: #666;
+      border-color: #999;
+    }
+
+    .btn-secondary {
+      background-color: #f5f5f5;
+      color: #000;
+      border-color: #666;
+    }
+
+    code {
+      background-color: #f4f4f4;
+      padding: 3px 8px;
+      border-radius: 0;
+      border: 1px solid #ddd;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #000;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions-section {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <script>
+    const uploadId = "<%= upload._id %>";
+
+    async function reverifyDoc() {
+      if (confirm("Re-verify this document? This will run AI analysis again.")) {
+        const res = await fetch(`/api/verify/${uploadId}`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          alert("Verification completed!");
+          location.reload();
+        } else {
+          alert("Verification failed: " + data.message);
+        }
+      }
+    }
+
+    async function approveDoc() {
+      if (confirm("Approve this document?")) {
+        const res = await fetch(`/api/approve/${uploadId}`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          alert("Document approved!");
+          location.reload();
+        } else {
+          alert("Approval failed: " + data.message);
+        }
+      }
+    }
+
+    async function rejectDoc() {
+      if (confirm("Reject this document?")) {
+        const res = await fetch(`/api/reject/${uploadId}`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          alert("Document rejected!");
+          location.reload();
+        } else {
+          alert("Rejection failed: " + data.message);
+        }
+      }
+    }
+
+    function downloadReport() {
+      const report = `
+VERIDOCS AI - VERIFICATION REPORT
+=====================================
+
+Document ID: <%= upload._id %>
+File Name: <%= upload.fileName %>
+File Type: <%= upload.fileType %>
+Upload Date: <%= new Date(upload.createdAt).toLocaleString() %>
+
+VERIFICATION RESULTS:
+Status: <%= upload.result?.status || 'Pending' %>
+Authenticity Score: <%= upload.result?.authenticityScore || 'N/A' %>
+
+ANOMALIES DETECTED:
+<% if (upload.result?.anomalies && upload.result.anomalies.length > 0) { %>
+  <% upload.result.anomalies.forEach((anomaly, i) => { %>
+  <%= i + 1 %>. <%= anomaly %>
+  <% }) %>
+<% } else { %>
+None
+<% } %>
+
+VERIFICATION METHODS:
+<% if (upload.result?.verifiedAgainst && upload.result.verifiedAgainst.length > 0) { %>
+  <% upload.result.verifiedAgainst.forEach((model, i) => { %>
+  <%= i + 1 %>. <%= model %>
+  <% }) %>
+<% } else { %>
+Not available
+<% } %>
+
+=====================================
+Generated: ${new Date().toLocaleString()}
+      `;
+
+      const blob = new Blob([report], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `verification-report-${uploadId}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

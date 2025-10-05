@@ -69,5 +69,20 @@ router.get("/dashboard", async (req, res) => {
         res.status(500).send("Error loading dashboard");
     }
 });
+//result page
+router.get("/result/:id", async (req, res) => {
+    try {
+        const upload = await Upload.findById(req.params.id);
+        
+        if (!upload) {
+            return res.status(404).send("Upload not found");
+        }
+
+        res.render("result.ejs", { upload });
+    } catch (err) {
+        console.error("Result page error:", err);
+        res.status(500).send("Error loading results");
+    }
+});
 
 module.exports = router;
