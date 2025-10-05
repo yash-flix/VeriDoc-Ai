@@ -1,7 +1,6 @@
 <%- include('layouts/boilerplate.ejs') %>
 <body>
   <h1>All Uploads</h1>
-  
 
   <% if (success_msg) { %>
     <p style="color: green;"><%= success_msg %></p>
@@ -14,7 +13,7 @@
   <% if (uploads.length === 0) { %>
     <p>No uploads yet.</p>
   <% } else { %>
-    <table border="1" cellpadding="10">
+    <table border="1" cellpadding="10" style="width:100%; border-collapse: collapse;">
       <tr>
         <th>File Name</th>
         <th>Type</th>
@@ -25,53 +24,95 @@
       </tr>
       <% uploads.forEach(upload => { %>
         <tr id="row-<%= upload._id %>">
-  <td><%= upload.fileName %></td>
-  <td><%= upload.fileType %></td>
-  <td class="status"><%= upload.result ? upload.result.status : "Pending" %></td>
-  <td class="score"><%= upload.result ? (upload.result.authenticityScore || "N/A") : "N/A" %></td>
-  <td>
-    <% if (upload.fileUrl) { %>
-      <a href="<%= upload.fileUrl %>" target="_blank">Open</a>
-    <% } else { %>
-      No file
-    <% } %>
-  </td>
-  <td>
-    <button onclick="verifyDoc('<%= upload._id %>')">Verify</button>
-    <button onclick="approveDoc('<%= upload._id %>')">Approve</button>
-    <button onclick="rejectDoc('<%= upload._id %>')">Reject</button>
-  </td>
-</tr>
+          <td><%= upload.fileName %></td>
+          <td><%= upload.fileType %></td>
+          <td class="status"><%= upload.result ? upload.result.status : "Pending" %></td>
+          <td class="score"><%= upload.result ? (upload.result.authenticityScore || "N/A") : "N/A" %></td>
+          <td>
+            <% if (upload.fileUrl) { %>
+              <a href="<%= upload.fileUrl %>" target="_blank">Open</a>
+            <% } else { %>
+              No file
+            <% } %>
+          </td>
+          <td>
+            <button onclick="verifyDoc('<%= upload._id %>')">Verify</button>
+            <button onclick="approveDoc('<%= upload._id %>')">Approve</button>
+            <button onclick="rejectDoc('<%= upload._id %>')">Reject</button>
+            <button onclick="toggleDetails('<%= upload._id %>')">Details</button>
+          </td>
+        </tr>
 
+        <!-- Collapsible AI Analysis Row -->
+        <tr id="details-<%= upload._id %>" style="display:none; background:#f9f9f9;">
+          <td colspan="6">
+            <strong>AI Analysis:</strong><br>
+            <ul>
+              <li><strong>Status:</strong> <%= upload.result?.status || "N/A" %></li>
+              <li><strong>Authenticity Score:</strong> <%= upload.result?.authenticityScore || "N/A" %></li>
+              <li><strong>Anomalies:</strong> 
+                <% if (upload.result?.anomalies && upload.result.anomalies.length > 0) { %>
+                  <%= upload.result.anomalies.join(", ") %>
+                <% } else { %>
+                  None
+                <% } %>
+              </li>
+              <li><strong>Verified Against Models:</strong>
+                <% if (upload.result?.verifiedAgainst && upload.result.verifiedAgainst.length > 0) { %>
+                  <%= upload.result.verifiedAgainst.join(", ") %>
+                <% } else { %>
+                  Not available
+                <% } %>
+              </li>
+              <li><strong>Last Checked:</strong> <%= upload.createdAt.toLocaleString() %></li>
+            </ul>
+          </td>
+        </tr>
       <% }) %>
     </table>
   <% } %>
-  
+
   <script>
-  async function verifyDoc(id) {
-    const res = await fetch(`/api/verify/${id}`, { method: "POST" });
-    const data = await res.json();
-    updateRow(id, data.result);
-  }
+    async function verifyDoc(id) {
+      const res = await fetch(`/api/verify/${id}`, { method: "POST" });
+      const data = await res.json();
+      updateRow(id, data.result);
+    }
 
-  async function approveDoc(id) {
-    const res = await fetch(`/api/approve/${id}`, { method: "POST" });
-    const data = await res.json();
-    updateRow(id, data.result);
-  }
+    async function approveDoc(id) {
+      const res = await fetch(`/api/approve/${id}`, { method: "POST" });
+      const data = await res.json();
+      updateRow(id, data.result);
+    }
 
-  async function rejectDoc(id) {
-    const res = await fetch(`/api/reject/${id}`, { method: "POST" });
-    const data = await res.json();
-    updateRow(id, data.result);
-  }
+    async function rejectDoc(id) {
+      const res = await fetch(`/api/reject/${id}`, { method: "POST" });
+      const data = await res.json();
+      updateRow(id, data.result);
+    }
 
-  function updateRow(id, result) {
-    const row = document.getElementById(`row-${id}`);
-    row.querySelector(".status").textContent = result.status;
-    row.querySelector(".score").textContent = result.authenticityScore ?? "N/A";
-  }
-</script>
+    function updateRow(id, result) {
+      const row = document.getElementById(`row-${id}`);
+      row.querySelector(".status").textContent = result.status;
+      row.querySelector(".score").textContent = result.authenticityScore ?? "N/A";
 
+      // Also update anomalies + models inside details row if open
+      const detailsRow = document.getElementById(`details-${id}`);
+      if (detailsRow) {
+        detailsRow.querySelector("ul").innerHTML = `
+          <li><strong>Status:</strong> ${result.status}</li>
+          <li><strong>Authenticity Score:</strong> ${result.authenticityScore ?? "N/A"}</li>
+          <li><strong>Anomalies:</strong> ${(result.anomalies && result.anomalies.length > 0) ? result.anomalies.join(", ") : "None"}</li>
+          <li><strong>Verified Against Models:</strong> ${(result.verifiedAgainst && result.verifiedAgainst.length > 0) ? result.verifiedAgainst.join(", ") : "Not available"}</li>
+          <li><strong>Last Checked:</strong> ${new Date().toLocaleString()}</li>
+        `;
+      }
+    }
+
+    function toggleDetails(id) {
+      const detailsRow = document.getElementById(`details-${id}`);
+      detailsRow.style.display = detailsRow.style.display === "none" ? "table-row" : "none";
+    }
+  </script>
 </body>
 </html>
