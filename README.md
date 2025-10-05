@@ -169,11 +169,6 @@ text
 ---
 
 
-
-text
-
----
-
 ## 📊 Verification Dashboard
 
 The dashboard displays:
