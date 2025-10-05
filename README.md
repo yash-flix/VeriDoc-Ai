@@ -168,22 +168,7 @@ text
 
 ---
 
-## 🎨 Usage Example
 
-// Document verification workflow
-const formData = new FormData();
-formData.append('file', documentFile);
-formData.append('type', 'certificate');
-
-const response = await fetch('/api/verify/document', {
-method: 'POST',
-body: formData
-});
-
-const result = await response.json();
-console.log(result.authenticity); // "Authentic" or "Fake"
-console.log(result.confidence); // 0.0 - 1.0
-console.log(result.anomalies); // Array of detected issues
 
 text
 
